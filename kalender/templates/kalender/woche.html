@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block titel %}Kalender{% endblock %}
+{% block stil %}
+  .navi { display:flex; gap:.5rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap; }
+  .navi h1 { margin:0 1rem 0 0; }
+  .tabelle-wrap { overflow-x:auto; }
+  table.woche { border-collapse:collapse; width:100%; min-width:900px; background:#fff; }
+  table.woche th, table.woche td { border:1px solid var(--rand); vertical-align:top; padding:.3rem; }
+  table.woche thead th { background:#f1efe8; font-weight:600; }
+  table.woche th.heute { background:var(--gruen-hell); }
+  table.woche td { height:4.5rem; width:13%; }
+  table.woche th.raum { text-align:left; width:9%; background:#f7f5ef; }
+  td a.neu { display:block; color:#bbb; text-decoration:none; font-size:.8rem; text-align:right; }
+  td:hover a.neu { color:var(--gruen); }
+  .termin { display:block; text-decoration:none; color:#222; border-radius:4px; padding:.2rem .35rem; margin-bottom:.25rem; font-size:.82rem; border-left:4px solid; }
+  .termin small { display:block; color:#555; }
+  .art-vermietung { background:#e4eef9; border-color:#3a6ea5; }
+  .art-konzert { background:#f6e3ef; border-color:#9b3a75; }
+  .art-lehrgang { background:#e8f0e5; border-color:#3d6b35; }
+  .art-intern { background:#eee; border-color:#777; }
+  .status-angefragt { background:var(--gelb); border-color:#d4a017; border-style:dashed; border-width:1px 1px 1px 4px; }
+  .legende { display:flex; gap:.8rem; flex-wrap:wrap; font-size:.85rem; margin-top:.8rem; }
+  .legende span { padding:.1rem .5rem; }
+{% endblock %}
+{% block inhalt %}
+<div class="navi">
+  <h1>Kalenderwoche {{ kw }}</h1>
+  <a class="knopf grau" href="?datum={{ vorher|date:'Y-m-d' }}">&larr; Vorherige</a>
+  <a class="knopf grau" href="?">Heute</a>
+  <a class="knopf grau" href="?datum={{ nachher|date:'Y-m-d' }}">Nächste &rarr;</a>
+  <form method="get" style="display:flex;gap:.4rem"><input type="date" name="datum" style="width:auto"><button class="knopf grau">Gehe zu</button></form>
+</div>
+<div class="tabelle-wrap">
+<table class="woche">
+  <thead>
+    <tr>
+      <th class="raum">Raum</th>
+      {% for name, tag in tage %}
+        <th class="{% if tag == heute %}heute{% endif %}">{{ name }} {{ tag|date:"d.m." }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for zeile in zeilen %}
+    <tr>
+      <th class="raum">{{ zeile.raum.name }}</th>
+      {% for tag, termine in zeile.zellen %}
+      <td>
+        {% for b in termine %}
+          <a class="termin art-{{ b.art }} status-{{ b.status }}" href="{% url 'kalender:buchung_bearbeiten' b.pk %}" title="{{ b.get_art_display }} – {{ b.get_status_display }}">
+            <small>{{ b.beginn|time:"H:i" }}–{{ b.ende|time:"H:i" }}{% if b.status == "angefragt" %} · angefragt{% endif %}</small>
+            {{ b.titel }}
+          </a>
+        {% endfor %}
+        <a class="neu" href="{% url 'kalender:buchung_neu' %}?datum={{ tag|date:'Y-m-d' }}&amp;raum={{ zeile.raum.pk }}" title="Neue Buchung">+</a>
+      </td>
+      {% endfor %}
+    </tr>
+    {% empty %}
+    <tr><td colspan="8">Noch keine Räume angelegt.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+<div class="legende">
+  <span class="termin art-vermietung">Vermietung</span>
+  <span class="termin art-konzert">Konzert</span>
+  <span class="termin art-lehrgang">Lehrgang</span>
+  <span class="termin art-intern">Intern</span>
+  <span class="termin status-angefragt">Anfrage (noch nicht freigegeben)</span>
+</div>
+{% endblock %}

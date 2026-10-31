@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titel %}Raum anfragen{% endblock %}
+{% block inhalt %}
+<div class="karte" style="max-width:40rem;margin:0 auto">
+  <h1>Raum im Bürgerzentrum anfragen</h1>
+  <p>Ihre Anfrage wird von unseren Mitarbeitenden geprüft. Sie erhalten eine Rückmeldung per E-Mail.</p>
+  <form method="post">{% csrf_token %}
+    {% if form.non_field_errors %}<div class="meldung error">{% for e in form.non_field_errors %}{{ e }} {% endfor %}</div>{% endif %}
+    {% for feld in form %}
+      {% if feld.name == "website" %}
+        <p style="position:absolute;left:-9999px" aria-hidden="true">{{ feld }}</p>
+      {% else %}
+        <p>{{ feld.label_tag }}{{ feld }}{{ feld.errors }}</p>
+      {% endif %}
+    {% endfor %}
+    <button class="knopf">Anfrage senden</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titel %}Google Kalender{% endblock %}
+{% block inhalt %}
+<h1>Google Kalender verbinden</h1>
+{% if token_unsicher %}
+  <div class="meldung error">Hinweis: Es ist noch kein geheimer Kalender-Schlüssel gesetzt
+  (Umgebungsvariable <code>KALENDER_FEED_TOKEN</code>). Vor dem Echtbetrieb unbedingt festlegen.</div>
+{% endif %}
+<div class="karte">
+  <h2 style="font-size:1.1rem;margin-top:0">So geht’s</h2>
+  <ol>
+    <li>Google Kalender im Browser öffnen.</li>
+    <li>Links neben „Weitere Kalender“ auf <strong>+</strong> klicken und <strong>„Per URL“</strong> wählen.</li>
+    <li>Einen der Links unten einfügen und „Kalender hinzufügen“ klicken.</li>
+  </ol>
+  <p class="helptext">Es erscheinen nur freigegebene Termine. Google aktualisiert abonnierte Kalender
+  selbstständig, das kann einige Stunden dauern. Die Links sind geheim: Wer sie kennt, sieht alle Termine.</p>
+</div>
+<div class="karte">
+  <p><strong>Alle Räume:</strong><br><code>{{ alle }}</code></p>
+  {% for raum, url in raeume %}
+    <p><strong>{{ raum.name }}:</strong><br><code>{{ url }}</code></p>
+  {% endfor %}
+</div>
+<div class="karte">
+  <h2 style="font-size:1.1rem;margin-top:0">Anfrageformular für Außenstehende</h2>
+  <p>Diesen Link können Sie z.&nbsp;B. auf Ihrer Webseite veröffentlichen:<br><code>{{ anfrage_url }}</code></p>
+</div>
+{% endblock %}

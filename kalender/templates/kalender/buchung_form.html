@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titel %}{% if buchung %}Buchung bearbeiten{% else %}Neue Buchung{% endif %}{% endblock %}
+{% block inhalt %}
+<h1>{% if buchung %}Buchung bearbeiten{% else %}Neue Buchung{% endif %}</h1>
+{% if buchung.oeffentlich_angefragt %}<p class="meldung">Diese Buchung wurde über das öffentliche Anfrageformular gestellt.</p>{% endif %}
+<div class="karte" style="max-width:40rem">
+  <form method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for feld in form %}
+      <p>{{ feld.label_tag }}{{ feld }}{{ feld.errors }}{% if feld.help_text %}<span class="helptext">{{ feld.help_text }}</span>{% endif %}</p>
+    {% endfor %}
+    <button class="knopf">Speichern</button>
+    <a class="knopf grau" href="{% url 'kalender:woche' %}">Abbrechen</a>
+  </form>
+</div>
+<p class="helptext">Zum Stornieren den Status auf „Storniert“ setzen.</p>
+{% endblock %}

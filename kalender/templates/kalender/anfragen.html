@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titel %}Offene Anfragen{% endblock %}
+{% block inhalt %}
+<h1>Offene Anfragen</h1>
+{% for b in anfragen %}
+<div class="karte">
+  <h2 style="margin:0 0 .3rem;font-size:1.15rem">{{ b.titel }} <small style="font-weight:400;color:#666">({{ b.get_art_display }})</small></h2>
+  <p style="margin:.2rem 0"><strong>{{ b.raum }}</strong> · {{ b.zeitraum }}</p>
+  <p style="margin:.2rem 0">
+    {{ b.kontakt_name }}{% if b.kontakt_organisation %}, {{ b.kontakt_organisation }}{% endif %}
+    · <a href="mailto:{{ b.kontakt_email }}">{{ b.kontakt_email }}</a>
+    {% if b.kontakt_telefon %} · {{ b.kontakt_telefon }}{% endif %}
+  </p>
+  {% if b.nachricht %}<p style="white-space:pre-line;background:#f7f5ef;padding:.5rem;border-radius:4px">{{ b.nachricht }}</p>{% endif %}
+  <p style="color:#888;font-size:.85rem">Eingegangen am {{ b.erstellt_am|date:"d.m.Y H:i" }}</p>
+  {% if b.konflikt_liste %}
+    <div class="meldung error">Achtung, Überschneidung mit bestätigter Buchung:
+      {% for k in b.konflikt_liste %}<br><a href="{% url 'kalender:buchung_bearbeiten' k.pk %}">{{ k }}</a>{% endfor %}
+    </div>
+  {% endif %}
+  <form method="post" action="{% url 'kalender:entscheiden' b.pk %}" style="display:flex;gap:.5rem">
+    {% csrf_token %}
+    <button class="knopf" name="aktion" value="freigeben" {% if b.konflikt_liste %}disabled style="opacity:.5"{% endif %}>Freigeben</button>
+    <button class="knopf rot" name="aktion" value="ablehnen">Ablehnen</button>
+    <a class="knopf grau" href="{% url 'kalender:buchung_bearbeiten' b.pk %}">Bearbeiten</a>
+  </form>
+</div>
+{% empty %}
+<p>Keine offenen Anfragen.</p>
+{% endfor %}
+{% endblock %}

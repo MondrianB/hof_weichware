@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block titel %}Anmelden{% endblock %}
+{% block inhalt %}
+<div class="karte" style="max-width:26rem;margin:2rem auto">
+  <h1>Anmelden</h1>
+  <p>Bereich für Mitarbeitende.</p>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button class="knopf">Anmelden</button>
+  </form>
+</div>
+{% endblock %}

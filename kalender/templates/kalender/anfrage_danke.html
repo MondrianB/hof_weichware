@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titel %}Anfrage gesendet{% endblock %}
+{% block inhalt %}
+<div class="karte" style="max-width:40rem;margin:0 auto">
+  <h1>Vielen Dank für Ihre Anfrage!</h1>
+  <p>Wir haben Ihre Anfrage für <strong>{{ buchung.raum }}</strong> am <strong>{{ zeitraum }}</strong> erhalten.</p>
+  <p>Der Termin ist noch <strong>nicht verbindlich</strong>. Sobald unsere Mitarbeitenden die Anfrage geprüft haben,
+  erhalten Sie eine E-Mail an {{ buchung.kontakt_email }}.</p>
+  <p><a href="{% url 'kalender:anfrage' %}">Weitere Anfrage stellen</a></p>
+</div>
+{% endblock %}
